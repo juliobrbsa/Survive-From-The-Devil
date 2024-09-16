@@ -52,6 +52,34 @@ playerImage.src = 'ludriu.jpg';  // Substitua pelo caminho da imagem
 const enemyImage = new Image();
 enemyImage.src = 'nova.jpg';  // Substitua pelo caminho da imagem
 
+function getRandomPosition(width, height) {
+    const x = Math.random() * (canvas.width - width);
+    const y = Math.random() * (canvas.height - height);
+    return { x, y };
+}
+
+const collectiblesPhase1 = [
+    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'gold', name: 'moeda', description: 'Moeda de ouro', value: 10 },
+    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5 }, // Chave
+    { ...getRandomPosition(40, 40), width: 40, height: 40, color: 'green', name: 'joia', description: 'Joia esmeralda', value: 20 },
+];
+
+const collectiblesPhase2 = [
+    { ...getRandomPosition(25, 25), width: 25, height: 25, color: 'purple', name: 'pocao', description: 'Poção mágica', value: 15 },
+    { ...getRandomPosition(35, 35), width: 35, height: 35, color: 'blue', name: 'escudo', description: 'Escudo protetor', value: 25 },
+    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'red', name: 'sword', description: 'Espada afiada', value: 30 },
+    { ...getRandomPosition(20, 20), width: 20, height: 20, color: 'orange', name: 'fruta', description: 'Fruta deliciosa', value: 12 },
+];
+
+// Talvez seja bom tirar essas chaves adicionadas aqui, ele duplica a chave em toda fase impar, ou talvez seja bom não tirar pra não ficar tao dificil
+const collectiblesPhase3 = [
+    { ...getRandomPosition(20, 20), width: 20, height: 20, color: 'cyan', name: 'pocao', description: 'Poção reforçada', value: 25 },
+    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'magenta', name: 'escudo', description: 'Escudo mágico', value: 40 },
+    { ...getRandomPosition(40, 40), width: 40, height: 40, color: 'yellow', name: 'sword', description: 'Espada encantada', value: 50 },
+    { ...getRandomPosition(25, 25), width: 25, height: 25, color: 'gray', name: 'fruta', description: 'Fruta dourada', value: 20 },
+    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5 },  // Chave
+];
+
 // Inicializa os objetos coletáveis com base na fase atual
 let collectibles = [];
 
