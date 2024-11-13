@@ -7,7 +7,7 @@ body {
   align-items: flex-start;
   height: 100vh;
   width: 100vw; /* Garante que o background cubra toda a largura da tela */
-  background-image: url('./fiona-walker-blue-gray-standard.jpg'); /* Substitua pelo caminho da sua imagem */
+  background-image: url('src/fiona-walker-blue-gray-standard.jpg');
   background-repeat: repeat; /* Faz a imagem se repetir */
   background-size: auto; /* Mantém o tamanho original da imagem */
   background-position: top left; /* Garante que o background comece no topo esquerdo sem margens */
