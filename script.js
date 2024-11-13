@@ -1,4 +1,4 @@
-//Definindo o canvas e contexto
+// Definindo o canvas e contexto
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth - 10;
@@ -34,8 +34,8 @@ let currentPhase = 0;
 const player = {
     x: 100,
     y: 275,
-    width: playerImageWidth,
-    height: playerImageHeight,
+    width: playerImageWidth * 1.5 ,
+    height: playerImageHeight * 1.5 ,
     speed: 4,  // Velocidade de movimento
     inventory: [],
 };
@@ -46,51 +46,72 @@ const spawnMarkers = []; // Marcadores de spawn para os inimigos
 
 // Carregando a imagem do personagem
 const playerImage = new Image();
-playerImage.src = 'ludriu.jpg';  // Substitua pelo caminho da imagem
+playerImage.src = 'Pixel-Character-Design-2-by-SecondSurge-on-DeviantArt_1.png';  // Substitua pelo caminho da imagem
 
 // Carregando a imagem do inimigo
 const enemyImage = new Image();
-enemyImage.src = 'nova.jpg';  // Substitua pelo caminho da imagem
+enemyImage.src = 'png-transparent-bomb-cartoon-cherry-enemy-evil-explosive-eyes-fuse-game-purple (1).png';  // Substitua pelo caminho da imagem
 
-function getRandomPosition(width, height) {
-    const x = Math.random() * (canvas.width - width);
-    const y = Math.random() * (canvas.height - height);
-    return { x, y };
-}
-
+// Definindo objetos coletáveis para as fases
 const collectiblesPhase1 = [
-    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'gold', name: 'moeda', description: 'Moeda de ouro', value: 10 },
-    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5 }, // Chave
-    { ...getRandomPosition(40, 40), width: 40, height: 40, color: 'green', name: 'joia', description: 'Joia esmeralda', value: 20 },
+    {x: 400, y: 300, width: 30, height: 30, color: 'gold', name: 'moeda', description: 'Moeda de ouro', value: 10},
+    {x: 800, y: 200, width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5},
+    {x: 600, y: 100, width: 40, height: 40, color: 'green', name: 'joia', description: 'Joia esmeralda', value: 20},
 ];
 
 const collectiblesPhase2 = [
-    { ...getRandomPosition(25, 25), width: 25, height: 25, color: 'purple', name: 'pocao', description: 'Poção mágica', value: 15 },
-    { ...getRandomPosition(35, 35), width: 35, height: 35, color: 'blue', name: 'escudo', description: 'Escudo protetor', value: 25 },
-    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'red', name: 'sword', description: 'Espada afiada', value: 30 },
-    { ...getRandomPosition(20, 20), width: 20, height: 20, color: 'orange', name: 'fruta', description: 'Fruta deliciosa', value: 12 },
+    {x: 300, y: 500, width: 25, height: 25, color: 'purple', name: 'pocao', description: 'Poção mágica', value: 15},
+    {x: 900, y: 400, width: 35, height: 35, color: 'blue', name: 'escudo', description: 'Escudo protetor', value: 25},
+    {x: 200, y: 700, width: 30, height: 30, color: 'red', name: 'sword', description: 'Espada afiada', value: 30},
+    {x: 500, y: 600, width: 20, height: 20, color: 'orange', name: 'fruta', description: 'Fruta deliciosa', value: 12},
+    {x: 700, y: 500, width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5},  // Chave adicionada aqui
 ];
 
-// Talvez seja bom tirar essas chaves adicionadas aqui, ele duplica a chave em toda fase impar, ou talvez seja bom não tirar pra não ficar tao dificil
 const collectiblesPhase3 = [
-    { ...getRandomPosition(20, 20), width: 20, height: 20, color: 'cyan', name: 'pocao', description: 'Poção reforçada', value: 25 },
-    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'magenta', name: 'escudo', description: 'Escudo mágico', value: 40 },
-    { ...getRandomPosition(40, 40), width: 40, height: 40, color: 'yellow', name: 'sword', description: 'Espada encantada', value: 50 },
-    { ...getRandomPosition(25, 25), width: 25, height: 25, color: 'gray', name: 'fruta', description: 'Fruta dourada', value: 20 },
-    { ...getRandomPosition(30, 30), width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5 },  // Chave
+    {x: 100, y: 600, width: 20, height: 20, color: 'cyan', name: 'pocao', description: 'Poção reforçada', value: 25},
+    {x: 1100, y: 200, width: 30, height: 30, color: 'magenta', name: 'escudo', description: 'Escudo mágico', value: 40},
+    {x: 700, y: 400, width: 40, height: 40, color: 'yellow', name: 'sword', description: 'Espada encantada', value: 50},
+    {x: 400, y: 700, width: 25, height: 25, color: 'gray', name: 'fruta', description: 'Fruta dourada', value: 20},
+    {x: 900, y: 300, width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5},  // Chave adicionada aqui
 ];
+
 
 // Inicializa os objetos coletáveis com base na fase atual
 let collectibles = [];
 
-// Estrutura de dados árvore para gerar caminhos (simplificado)
-const gameTree = {
-    node: "start",
-    branches: [
-        { node: "nivel1", branches: [{ node: "nivel2", branches: [] }] },
-        { node: "nivel3", branches: [{ node: "nivel4", branches: [] }] },
-    ]
-};
+let currentLevel = 1; // Variável para armazenar o nível atual
+
+// Função para iniciar um novo nível
+function startLevel(level) {
+  currentLevel = level; // Atualiza o nível atual
+  displayLevel(currentLevel); // Exibe o nível na tela
+  generatePhase(); // Gera a fase para o nível atual
+}
+
+// Função para exibir o nível na tela
+function displayLevel(level) {
+  const levelBanner = document.createElement('div');
+  levelBanner.innerText = Level ${level};
+  levelBanner.style.position = 'absolute';
+  levelBanner.style.top = '50%';
+  levelBanner.style.left = '50%';
+  levelBanner.style.transform = 'translate(-50%, -50%)';
+  levelBanner.style.padding = '20px';
+  levelBanner.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+  levelBanner.style.color = 'white';
+  levelBanner.style.fontSize = '36px';
+  levelBanner.style.zIndex = '1000'; // Garante que o banner esteja acima de todos os outros elementos
+
+  document.body.appendChild(levelBanner);
+
+  // Remove o banner após 2 segundos
+  setTimeout(() => {
+    levelBanner.remove();
+  }, 2000);
+}
+
+// Inicializa o nível 1
+startLevel(1);
 
 // Variáveis para controle de movimento
 const keysPressed = {
@@ -102,46 +123,6 @@ const keysPressed = {
 
 // Variável para controle de jogo perdido
 let gameLost = false;
-
-// Definindo as dimensões do mapa e dos itens, e a distância mínima entre os itens
-const mapWidth = 800; // Largura do mapa (ajuste conforme seu mapa)
-const mapHeight = 600; // Altura do mapa (ajuste conforme seu mapa)
-const itemWidth = 30; // Largura do item (ajuste conforme seu item)
-const itemHeight = 30; // Altura do item (ajuste conforme seu item)
-const minDistance = 50; // Distância mínima entre os itens
-
-const items = [];
-
-// Função para gerar uma posição aleatória para os itens
-function generateRandomPosition() {
-    const x = Math.random() * (mapWidth - itemWidth);
-    const y = Math.random() * (mapHeight - itemHeight);
-    return { x, y };
-}
-
-// Função para spawnar itens aleatoriamente no mapa, respeitando a distância mínima entre eles
-function spawnItems(numItems) {
-    while (items.length < numItems) {
-        let position = generateRandomPosition();
-        let tooClose = items.some(item => 
-            Math.abs(item.x - position.x) < minDistance && 
-            Math.abs(item.y - position.y) < minDistance);
-
-        if (!tooClose) {
-            items.push(position);
-            // Lógica para adicionar o item no mapa
-            addItemToMap(position.x, position.y);
-        }
-    }
-}
-
-// Função para adicionar um item ao mapa (implementação personalizada para renderização)
-function addItemToMap(x, y) {
-    // Aqui você insere a lógica para realmente adicionar o item ao mapa, por exemplo:
-    // ctx.drawImage(itemImage, x, y);
-    ctx.fillStyle = 'gold';  // Cor para os itens (pode ser alterada conforme o item)
-    ctx.fillRect(x, y, itemWidth, itemHeight);
-}
 
 // Função de desenhar
 function draw() {
@@ -175,12 +156,6 @@ function draw() {
             ctx.fillRect(item.x, item.y, item.width, item.height);
         });
 
-        // Desenhando os itens gerados aleatoriamente
-        items.forEach(item => {
-            ctx.fillStyle = 'gold';
-            ctx.fillRect(item.x, item.y, itemWidth, itemHeight);
-        });
-
         // Desenhando os marcadores de spawn dos inimigos
         drawSpawnMarkers();
 
@@ -200,18 +175,6 @@ function draw() {
     // Loop de animação
     requestAnimationFrame(draw);
 }
-
-// Função para inicializar e desenhar os itens na fase
-function generatePhase() {
-    // Gere uma nova fase com coletáveis e inimigos
-    spawnItems(5);  // Exemplo: gerar 5 itens aleatórios na fase
-
-    // Restante da lógica de geração de fase, inimigos, etc.
-    // ...
-}
-
-// Chamando a função para inicializar a primeira fase
-generatePhase();
 
 // Função para desenhar os marcadores de spawn dos inimigos
 function drawSpawnMarkers() {
@@ -270,61 +233,221 @@ function drawMiniMap() {
     ctx.restore();
 }
 
+
+
 // Função para movimentar um inimigo em direção ao jogador
 function moveEnemy(enemy) {
     const dx = player.x - enemy.x;
     const dy = player.y - enemy.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance === 0) return; // Evita divisão por zero
+    if (distance === 0) return;  // Evita divisão por zero
 
-    // Normaliza a direção
-    const directionX = dx / distance;
-    const directionY = dy / distance;
+    const normalizedDx = dx / distance;
+    const normalizedDy = dy / distance;
 
-    enemy.x += directionX * enemy.speed;
-    enemy.y += directionY * enemy.speed;
+    enemy.x += normalizedDx * enemy.speed;
+    enemy.y += normalizedDy * enemy.speed;
 }
 
-// Função para verificar a colisão do jogador com os inimigos
+// Função para usar o escudo
+function useShield() {
+    // Remove o escudo do inventário
+    player.inventory = player.inventory.filter(item => item.name !== 'escudo'); 
+}
+
+// Função para verificar a colisão entre o jogador e os inimigos
 function checkCollision() {
-    enemies.forEach(enemy => {
+    enemies.forEach((enemy, index) => {
         if (player.x < enemy.x + enemy.width &&
             player.x + player.width > enemy.x &&
             player.y < enemy.y + enemy.height &&
             player.y + player.height > enemy.y) {
-            gameLost = true;  // O jogo é perdido se o jogador colidir com um inimigo
+            if (player.inventory.some(item => item.name === 'escudo')) {
+                // Se o escudo estiver presente, use-o e remova-o do inventário
+                useShield();
+
+                // Remove o inimigo que colidiu
+                enemies.splice(index, 1);
+
+                // Spawn de um novo inimigo longe do jogador
+                spawnNewEnemy();
+            } else {
+                // Se não houver escudo, o jogo é perdido
+                gameLost = true;
+                resetGame();  // Reinicia o jogo ao colidir com o inimigo
+            }
         }
     });
 }
 
-// Função para desenhar o inimigo em tela cheia quando o jogador perde
+
+// Função para gerar um novo inimigo longe do jogador
+function spawnNewEnemy() {
+    let newEnemy;
+    let spawnDistance;
+
+    do {
+        const x = Math.random() * (canvas.width - enemyImageWidth);
+        const y = Math.random() * (canvas.height - enemyImageHeight);
+
+        // Calcule a distância do novo inimigo ao jogador
+        spawnDistance = Math.sqrt((player.x - x) ** 2 + (player.y - y) ** 2);
+
+        // Cria um novo inimigo se ele estiver longe o suficiente do jogador
+        newEnemy = { x: x, y: y, width: enemyImageWidth, height: enemyImageHeight, speed: 2 };
+    } while (spawnDistance < 200); // Altere este valor para ajustar a distância mínima
+
+    enemies.push(newEnemy); // Adiciona o novo inimigo à lista
+}
+
+function nextPhase() {
+    currentPhase++;
+    startLevel(currentPhase + 1); // Inicia o próximo nível
+  }
+
+// Função para coletar itens
+function collectItem() {
+    collectibles.forEach((item, index) => {
+        if (player.x < item.x + item.width &&
+            player.x + player.width > item.x &&
+            player.y < item.y + item.height &&
+            player.y + player.height > item.y) {
+            player.inventory.push(item);
+            collectibles.splice(index, 1);
+            updateInventory();
+
+            // Verifica se a chave foi coletada
+            if (item.name === 'chave') {
+                nextPhase();
+            }
+        }
+    });
+}
+
+// Função para desenhar o inimigo em tela cheia
 function drawEnemyFullScreen() {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(enemyImage, 0, 0, canvas.width, canvas.height);
+}
+
+// Função para atualizar o inventário na tela
+function updateInventory() {
+    const inventoryList = document.getElementById('inventoryList');
+    inventoryList.innerHTML = '';
+
+    // Agrupar itens por tipo (nome)
+    const groupedItems = player.inventory.reduce((acc, item) => {
+        if (!acc[item.name]) {
+            acc[item.name] = [];
+        }
+        acc[item.name].push(item);
+        return acc;
+    }, {});
+
+    // Exibir itens no inventário
+    for (const [key, items] of Object.entries(groupedItems)) {
+        const listItem = document.createElement('li');
+        listItem.textContent = ${key} (x${items.length});
+        inventoryList.appendChild(listItem);
+    }
+}
+
+function generatePhase() {
+    // Gere uma nova fase com coletáveis e inimigos com base no nível atual
+    const collectibleTypes = [collectiblesPhase1, collectiblesPhase2, collectiblesPhase3];
+    const currentCollectibles = collectibleTypes[Math.floor(Math.random() * collectibleTypes.length)];  
+    // Inclua a chave em todos os tipos de coletáveis
+    collectibles = [...currentCollectibles, {x: Math.random() * (canvas.width - 30), y: Math.random() * (canvas.height - 30), width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5}];
+  
+    // Atualiza a lista de inimigos para a nova fase
+    enemies = [];
+    spawnMarkers.length = 0; // Limpa os marcadores de spawn
+    const numberOfEnemies = currentPhase + 1;  // Aumenta o número de inimigos com o tempo
+  
+    // Adiciona os marcadores de spawn para os inimigos
+    for (let i = 0; i < numberOfEnemies; i++) {
+      const x = Math.random() * (canvas.width - enemyImageWidth);
+      const y = Math.random() * (canvas.height - enemyImageHeight);
+      spawnMarkers.push({x: x, y: y}); // Adiciona o marcador de spawn
+    }
+  
+    // Adiciona um atraso de 5 segundos para o aparecimento dos inimigos
+    setTimeout(() => {
+      spawnMarkers.forEach(marker => {
+        enemies.push({
+          x: marker.x,
+          y: marker.y,
+          width: enemyImageWidth,
+          height: enemyImageHeight,
+          speed: 2,  // Aumenta a velocidade dos inimigos com o tempo
+        });
+      });
+      spawnMarkers.length = 0; // Limpa os marcadores de spawn após os inimigos aparecerem
+    }, 3000);
+  }
+
+// Função para gerar uma cor aleatória
+function getRandomColor() {
+    const colors = ['gold', 'silver', 'green', 'purple', 'blue', 'red', 'orange'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Função para gerar um nome de item aleatório
+function getRandomItemName() {
+    const names = ['moeda', 'chave', 'joia', 'pocao', 'escudo', 'sword', 'fruta'];
+    return names[Math.floor(Math.random() * names.length)];
+}
+
+
+// Função para mostrar a imagem do inimigo em tela cheia
+function drawEnemyFullScreen() {
+    if (enemyImage.complete) {
+        ctx.drawImage(enemyImage, 0, 0, canvas.width, canvas.height);
+    } else {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+}
+
+// Função para reiniciar o jogo
+function resetGame() {
+    player.x = 100;
+    player.y = 275;
+    player.inventory = [];
+    gameLost = false;  // Reseta o estado do jogo
+    currentPhase = 0;  // Reinicia a fase para a fase inicial
+    generatePhase();  // Gera a fase inicial
+    updateInventory();
+    alert("Você foi derrotado! O jogo será reiniciado.");
 }
 
 // Função para movimentar o jogador
 function movePlayer() {
-    if (keysPressed.w && player.y > 0) player.y -= player.speed;
-    if (keysPressed.s && player.y < canvas.height - player.height) player.y += player.speed;
-    if (keysPressed.a && player.x > 0) player.x -= player.speed;
-    if (keysPressed.d && player.x < canvas.width - player.width) player.x += player.speed;
+    if (keysPressed.w) player.y -= player.speed;
+    if (keysPressed.s) player.y += player.speed;
+    if (keysPressed.a) player.x -= player.speed;
+    if (keysPressed.d) player.x += player.speed;
+
+    // Verificar se o jogador saiu dos limites do canvas
+    player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+    player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
+
+    collectItem();
 }
 
-// Adiciona ouvintes de eventos para movimentação do jogador
-window.addEventListener('keydown', (event) => {
-    if (event.key in keysPressed) {
-        keysPressed[event.key] = true;
+// Eventos de pressionar e soltar teclas
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'w' || e.key === 'a' || e.key === 's' || e.key === 'd') {
+        keysPressed[e.key] = true;
     }
 });
 
-window.addEventListener('keyup', (event) => {
-    if (event.key in keysPressed) {
-        keysPressed[event.key] = false;
+window.addEventListener('keyup', function(e) {
+    if (e.key === 'w' || e.key === 'a' || e.key === 's' || e.key === 'd') {
+        keysPressed[e.key] = false;
     }
 });
 
-// Inicia o loop de desenho
+// Iniciar o jogo
 draw();
