@@ -1,0 +1,42 @@
+/* Estilo para o body */
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  width: 100vw; /* Garante que o background cubra toda a largura da tela */
+  background-image: url('./fiona-walker-blue-gray-standard.jpg'); /* Substitua pelo caminho da sua imagem */
+  background-repeat: repeat; /* Faz a imagem se repetir */
+  background-size: auto; /* Mantém o tamanho original da imagem */
+  background-position: top left; /* Garante que o background comece no topo esquerdo sem margens */
+  color: white;
+  box-sizing: border-box; /* Garante que o padding não afete o tamanho do body */
+}
+
+
+
+/* Estilo para o inventário */
+#inventory {
+  font-size: 24px; /* Ajusta o tamanho da fonte */
+  position: absolute;
+  margin-top: 15px;
+  right: 25px;
+  font-family: 'Helvetica', sans-serif; /* Define a fonte Helvetica */
+}
+
+#inventory h2 {
+  margin: 0 0 10px 0; /* Adiciona uma margem inferior para separar o título dos itens */
+}
+
+#inventory ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0; /* Remove a margem da lista */
+}
+
+#inventory ul li {
+  margin: 5px 0; /* Ajusta a margem entre os itens */
+  font-size: 20px; /* Ajusta o tamanho da fonte */
+}
