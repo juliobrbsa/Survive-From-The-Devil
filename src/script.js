@@ -46,11 +46,11 @@ const spawnMarkers = []; // Marcadores de spawn para os inimigos
 
 // Carregando a imagem do personagem
 const playerImage = new Image();
-playerImage.src = 'Pixel-Character-Design-2-by-SecondSurge-on-DeviantArt_1.png';  // Substitua pelo caminho da imagem
+playerImage.src = 'src/Pixel-Character-Design-2-by-SecondSurge-on-DeviantArt_1.png';
 
 // Carregando a imagem do inimigo
 const enemyImage = new Image();
-enemyImage.src = 'png-transparent-bomb-cartoon-cherry-enemy-evil-explosive-eyes-fuse-game-purple (1).png';  // Substitua pelo caminho da imagem
+enemyImage.src = 'src/png-transparent-bomb-cartoon-cherry-enemy-evil-explosive-eyes-fuse-game-purple (1).png';
 
 // Definindo objetos coletáveis para as fases
 const collectiblesPhase1 = [
