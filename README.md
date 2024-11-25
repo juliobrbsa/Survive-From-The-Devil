@@ -21,15 +21,10 @@ Este é um simples jogo web onde o jogador controla um personagem principal que 
 4. **Evitar Inimigos**: Não permita que os inimigos toquem no personagem, ou o jogo será reiniciado.
 5. **Avançar de Fase**: Encontre e colete a chave escondida em cada fase para desbloquear a próxima.
 
-## Como Executar o Jogo
+## Jogue Agora
 
-1. **Clonar o Repositório**
-
-   ```bash
-   git clone https://github.com/seu-usuario/nome-do-repositorio.git
-   
-2. Abrir o arquivo `index.html` <br>
-   Abra o arquivo `index.html` em qualquer navegador web e divirta-se.
+Você pode jogar diretamente acessando o link abaixo:  
+[**Clique aqui para jogar Survive From The Devil**](https://survive-from-the-devil.vercel.app/)
 
 ## Estrutura do Projeto
 
