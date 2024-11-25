@@ -83,13 +83,28 @@ let collectibles = [];
 generatePhase();
 
 // Estrutura de dados árvore para gerar caminhos (simplificado)
-const gameTree = {
-    node: "start",
-    branches: [
-        { node: "nivel1", branches: [{ node: "nivel2", branches: [] }] },
-        { node: "nivel3", branches: [{ node: "nivel4", branches: [] }] },
-    ]
-};
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
+    }
+
+    addChild(node) {
+        this.children.push(node);
+    }
+}
+
+const gameTree = new TreeNode("start");
+const level1 = new TreeNode("nivel1");
+const level2 = new TreeNode("nivel2");
+const level3 = new TreeNode("nivel3");
+const level4 = new TreeNode("nivel4");
+
+// Construindo a árvore do jogo
+gameTree.addChild(level1);
+gameTree.addChild(level3);
+level1.addChild(level2);
+level3.addChild(level4);
 
 // Variáveis para controle de movimento
 const keysPressed = {
