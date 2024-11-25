@@ -5,18 +5,21 @@ Este é um simples jogo web onde o jogador controla um personagem principal que 
 ## Funcionalidades
 
 - **Personagem Principal**: O jogador controla um personagem que pode se mover nas direções W, A, S, D.
-- **Objetos Coletáveis**: O jogador pode coletar diferentes objetos, como chaves, poções, que desbloqueiam o próximo nível.
-- **Inventário**: O jogador possui um inventário para armazenar os objetos coletados.
-- **Inimigos**: Inimigos perseguem o jogador. Se tocarem no jogador, o jogo reinicia.
-- **Mini-mapa**: Mostra a posição do jogador, inimigos e objetos coletáveis.
-- **6 Fases**: Cada fase possui uma dificuldade crescente, com mais inimigos e desafios.
+- **Objetos Coletáveis**: Itens como chaves, escudos, espinhos, moedas e poções são espalhados pelo mapa, ajudando o jogador a progredir.
+- **Sistema de Coleta Aleatória**: Os itens aparecem no mapa em formato de interrogação, garantindo que o jogador não saiba o que está coletando até interagir.
+- **Inventário**: Os objetos coletados são armazenados em um inventário, onde podem ser usados durante o jogo.
+- **Inimigos Inteligentes**: Inimigos perseguem o jogador e aparecem em posições estrategicamente distantes no início de cada fase. O toque de um inimigo faz o jogo reiniciar.
+- **Mecânicas de Ataque**: O jogador pode utilizar itens como espinhos para se defender ou atacar os inimigos.
+- **Mini-mapa**: Exibe a posição do jogador, inimigos e objetos coletáveis, auxiliando na estratégia.
+- **Progressão de Fases**: O jogo possui 6 fases com dificuldade crescente, mais inimigos e desafios.
 
 ## Como Jogar
 
-- **Movimentação**: Use as teclas `W`, `A`, `S`, `D` para mover o personagem.
-- **Coletar Objetos**: Colida com os objetos para coletá-los.
-- **Evitar Inimigos**: Não deixe que os inimigos toquem no jogador, ou o jogo será reiniciado.
-- **Desbloquear Fases**: Colete a chave em cada fase para desbloquear a próxima.
+1. **Movimentação**: Use as teclas **W, A, S, D** para mover o personagem.
+2. **Coletar Objetos**: Colida com os itens para coletá-los e armazená-los no inventário.
+3. **Usar Itens**: Utilize itens coletados no inventário para atacar ou se defender.
+4. **Evitar Inimigos**: Não permita que os inimigos toquem no personagem, ou o jogo será reiniciado.
+5. **Avançar de Fase**: Encontre e colete a chave escondida em cada fase para desbloquear a próxima.
 
 ## Como Executar o Jogo
 
