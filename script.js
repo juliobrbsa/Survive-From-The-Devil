@@ -5,13 +5,14 @@ canvas.width = window.innerWidth - 10;
 canvas.height = window.innerHeight - 10;
 
 // Atualizar o tamanho do canvas e do minimapa quando a janela é redimensionada
+// Este bloco de código garante que o canvas e o minimapa sejam ajustados automaticamente ao redimensionar a janela, proporcionando uma experiência consistente ao jogador
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     // Tamanho do mini-mapa como uma proporção da largura e altura da tela
-    const miniMapWidth = window.innerWidth / 6;  // 1/4 da largura da tela
-    const miniMapHeight = window.innerHeight / 6; // 1/4 da altura da tela
+    const miniMapWidth = window.innerWidth / 6;  // 1/6 da largura da tela
+    const miniMapHeight = window.innerHeight / 6; // 1/6 da altura da tela
     miniMapSize = { width: miniMapWidth, height: miniMapHeight };
 
     // Atualizar a escala do mini-mapa
@@ -31,6 +32,7 @@ const enemyImageHeight = 70;  // Altura da imagem do inimigo
 let currentPhase = 0;
 
 // Definindo o personagem principal
+// Estrutura que representa o jogador com propriedades como posição, tamanho e inventário
 const player = {
     x: 100,
     y: 275,
@@ -41,6 +43,7 @@ const player = {
 };
 
 // Definindo os inimigos
+// Lista que será usada para armazenar os inimigos presentes no jogo
 let enemies = [];
 const spawnMarkers = []; // Marcadores de spawn para os inimigos
 
@@ -53,6 +56,7 @@ const enemyImage = new Image();
 enemyImage.src = 'nova.png';  // Substitua pelo caminho da imagem
 
 // Definindo objetos coletáveis para as fases
+// Cada fase tem uma lista de itens que podem ser coletados pelo jogador. Estes itens têm propriedades como posição, cor e valor
 const collectiblesPhase1 = [
     {x: 400, y: 300, width: 30, height: 30, color: 'gold', name: 'moeda', description: 'Moeda de ouro', value: 10},
     {x: 800, y: 200, width: 30, height: 30, color: 'silver', name: 'chave', description: 'Chave de prata', value: 5},
@@ -80,9 +84,11 @@ const collectiblesPhase3 = [
 let collectibles = [];
 
 // Inicializa a fase
+// Função que prepara os itens e inimigos de acordo com a fase corrente
 generatePhase();
 
 // Estrutura de dados árvore para gerar caminhos (simplificado)
+// A árvore é usada para representar a estrutura das fases do jogo, facilitando a navegação entre diferentes níveis
 class TreeNode {
     constructor(value) {
         this.value = value;
@@ -101,12 +107,14 @@ const level3 = new TreeNode("nivel3");
 const level4 = new TreeNode("nivel4");
 
 // Construindo a árvore do jogo
+// Cada nó da árvore representa um nível e os filhos representam as fases seguintes
 gameTree.addChild(level1);
 gameTree.addChild(level3);
 level1.addChild(level2);
 level3.addChild(level4);
 
 // Variáveis para controle de movimento
+// Objeto que armazena o estado das teclas pressionadas para controle do movimento do jogador
 const keysPressed = {
     w: false,
     a: false,
@@ -118,18 +126,19 @@ const keysPressed = {
 let gameLost = false;
 
 // Função de desenhar
+// Função principal que desenha todos os elementos do jogo, como personagem, inimigos, coletáveis, minimapa, etc.
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (gameLost) {
-        // Exibe a imagem do inimigo em tela cheia
+        // Exibe a imagem do inimigo em tela cheia se o jogador perder
         drawEnemyFullScreen();
     } else {
         // Desenhando o personagem com a imagem
         if (playerImage.complete) {  // Verifica se a imagem está carregada
             ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
         } else {
-            ctx.fillStyle = 'blue';  // Caso a imagem ainda não tenha carregado
+            ctx.fillStyle = 'blue';  // Caso a imagem ainda não tenha carregado, desenha um quadrado azul
             ctx.fillRect(player.x, player.y, player.width, player.height);
         }
 
@@ -138,7 +147,7 @@ function draw() {
             if (enemyImage.complete) {  // Verifica se a imagem está carregada
                 ctx.drawImage(enemyImage, enemy.x, enemy.y, enemy.width, enemy.height);
             } else {
-                ctx.fillStyle = 'red';  // Caso a imagem ainda não tenha carregado
+                ctx.fillStyle = 'red';  // Caso a imagem ainda não tenha carregado, desenha um quadrado vermelho
                 ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
             }
         });
@@ -165,11 +174,12 @@ function draw() {
         checkCollision();
     }
 
-    // Loop de animação
+    // Loop de animação para garantir que o jogo seja continuamente atualizado
     requestAnimationFrame(draw);
 }
 
 // Função para desenhar os marcadores de spawn dos inimigos
+// Esta função desenha círculos indicando onde os inimigos podem aparecer
 function drawSpawnMarkers() {
     ctx.fillStyle = 'pink';  // Cor para os marcadores de spawn
     spawnMarkers.forEach(marker => {
@@ -180,6 +190,7 @@ function drawSpawnMarkers() {
 }
 
 // Função para desenhar o mini-mapa
+// Mostra uma visão reduzida da área do jogo, ajudando o jogador a se orientar
 function drawMiniMap() {
     ctx.save();
     ctx.globalAlpha = 0.7;
@@ -227,8 +238,8 @@ function drawMiniMap() {
 }
 
 
-
 // Função para movimentar um inimigo em direção ao jogador
+// Algoritmo que faz com que os inimigos sigam o jogador. Eles se movem na direção do jogador para aumentar o desafio
 function moveEnemy(enemy) {
     const dx = player.x - enemy.x;
     const dy = player.y - enemy.y;
@@ -244,12 +255,13 @@ function moveEnemy(enemy) {
 }
 
 // Função para usar o escudo
+// Remove o escudo do inventário quando ele é usado para se proteger de um inimigo
 function useShield() {
-    // Remove o escudo do inventário
     player.inventory = player.inventory.filter(item => item.name !== 'escudo'); 
 }
 
 // Função para verificar a colisão entre o jogador e os inimigos
+// Determina se o jogador colidiu com um inimigo e define as ações correspondentes (usar espada ou escudo, ou perder o jogo)
 function checkCollision() {
     enemies.forEach((enemy, index) => {
         if (player.x < enemy.x + enemy.width &&
@@ -284,33 +296,8 @@ function checkCollision() {
 }
 
 
-// Função para verificar a colisão entre o jogador e os inimigos
-function checkCollision() {
-    enemies.forEach((enemy, index) => {
-        if (player.x < enemy.x + enemy.width &&
-            player.x + player.width > enemy.x &&
-            player.y < enemy.y + enemy.height &&
-            player.y + player.height > enemy.y) {
-            if (player.inventory.some(item => item.name === 'escudo')) {
-                // Se o escudo estiver presente, use-o e remova-o do inventário
-                useShield();
-
-                // Remove o inimigo que colidiu
-                enemies.splice(index, 1);
-
-                // Spawn de um novo inimigo longe do jogador
-                spawnNewEnemy();
-            } else {
-                // Se não houver escudo, o jogo é perdido
-                gameLost = true;
-                resetGame();  // Reinicia o jogo ao colidir com o inimigo
-            }
-        }
-    });
-}
-
-
 // Função para gerar um novo inimigo longe do jogador
+// Gera inimigos em pontos aleatórios no mapa que estejam a uma distância mínima do jogador para evitar colidir imediatamente após o spawn
 function spawnNewEnemy() {
     let newEnemy;
     let spawnDistance;
@@ -330,6 +317,7 @@ function spawnNewEnemy() {
 }
 
 // Função para coletar itens
+// Verifica se o jogador colidiu com algum item coletável e o adiciona ao inventário, removendo-o do mapa
 function collectItem() {
     collectibles.forEach((item, index) => {
         if (player.x < item.x + item.width &&
@@ -340,7 +328,7 @@ function collectItem() {
             collectibles.splice(index, 1);
             updateInventory();
 
-            // Verifica se a chave foi coletada
+            // Verifica se a chave foi coletada para passar de fase
             if (item.name === 'chave') {
                 nextPhase();
             }
@@ -349,12 +337,14 @@ function collectItem() {
 }
 
 // Função para desenhar o inimigo em tela cheia
+// Esta função é usada para mostrar uma tela de derrota ao jogador, desenhando o inimigo em tela cheia
 function drawEnemyFullScreen() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(enemyImage, 0, 0, canvas.width, canvas.height);
 }
 
 // Função para atualizar o inventário na tela
+// Atualiza a interface do inventário para refletir os itens que o jogador possui, agrupando itens do mesmo tipo
 function updateInventory() {
     const inventoryList = document.getElementById('inventoryList');
     inventoryList.innerHTML = '';
@@ -377,6 +367,7 @@ function updateInventory() {
 }
 
 // Função para gerar uma fase nova
+// Configura os elementos da próxima fase, como novos itens coletáveis e novos inimigos
 function generatePhase() {
     // Gere uma nova fase com coletáveis e inimigos
     const collectibleTypes = [collectiblesPhase1, collectiblesPhase2, collectiblesPhase3];
@@ -413,34 +404,28 @@ function generatePhase() {
 }
 
 // Função para gerar uma cor aleatória
+// Retorna uma cor aleatória que pode ser usada para representar itens coletáveis
 function getRandomColor() {
     const colors = ['gold', 'silver', 'green', 'purple', 'blue', 'red', 'orange'];
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
 // Função para gerar um nome de item aleatório
+// Retorna um nome aleatório para um item coletável
 function getRandomItemName() {
     const names = ['moeda', 'chave', 'joia', 'pocao', 'escudo', 'sword', 'fruta'];
     return names[Math.floor(Math.random() * names.length)];
 }
 
 // Função para avançar para a próxima fase
+// Aumenta o nível da fase e gera os novos elementos para a fase seguinte
 function nextPhase() {
     currentPhase++;
     generatePhase();  // Gera a nova fase
 }
 
-// Função para mostrar a imagem do inimigo em tela cheia
-function drawEnemyFullScreen() {
-    if (enemyImage.complete) {
-        ctx.drawImage(enemyImage, 0, 0, canvas.width, canvas.height);
-    } else {
-        ctx.fillStyle = 'red';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-}
-
 // Função para reiniciar o jogo
+// Restaura as condições iniciais do jogo após o jogador perder
 function resetGame() {
     player.x = 50;
     player.y = 50;
@@ -453,6 +438,7 @@ function resetGame() {
 }
 
 // Função para movimentar o jogador
+// Controla a movimentação do jogador de acordo com as teclas pressionadas, garantindo que ele permaneça dentro dos limites do canvas
 function movePlayer() {
     if (keysPressed.w) player.y -= player.speed;
     if (keysPressed.s) player.y += player.speed;
@@ -467,6 +453,7 @@ function movePlayer() {
 }
 
 // Eventos de pressionar e soltar teclas
+// Atualiza o estado das teclas pressionadas para controlar o movimento do jogador
 window.addEventListener('keydown', function(e) {
     if (e.key === 'w' || e.key === 'a' || e.key === 's' || e.key === 'd') {
         keysPressed[e.key] = true;
@@ -480,4 +467,5 @@ window.addEventListener('keyup', function(e) {
 });
 
 // Iniciar o jogo
+// Inicia o loop principal do jogo chamando a função de desenhar
 draw();
